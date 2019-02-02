@@ -119,50 +119,70 @@
             var s = function (sel) { return document.querySelector(sel); };
             var sId = function (sel) { return document.getElementById(sel); };
             // Get debug elements and map them
-            var elDebug = sId('debugL');
-            var elDump = elDebug.querySelector('.dump');
-            var els = {
+            var elDebug = [sId('debugL'), sId('debugR')];
+            var elDump = [elDebug[0].querySelector('.dump'), elDebug[1].querySelector('.dump')];
+            var els = [
+                {
+                  position: {
+                      x: elDebug[0].querySelector('.position .x .data'),
+                      y: elDebug[0].querySelector('.position .y .data')
+                  },
+                  force: elDebug[0].querySelector('.force .data'),
+                  pressure: elDebug[0].querySelector('.pressure .data'),
+                  distance: elDebug[0].querySelector('.distance .data'),
+                  angle: {
+                      radian: elDebug[0].querySelector('.angle .radian .data'),
+                      degree: elDebug[0].querySelector('.angle .degree .data')
+                  },
+                  direction: {
+                      x: elDebug[0].querySelector('.direction .x .data'),
+                      y: elDebug[0].querySelector('.direction .y .data'),
+                      angle: elDebug[0].querySelector('.direction .angle .data')
+                  }
+              },
+              {
                 position: {
-                    x: elDebug.querySelector('.position .x .data'),
-                    y: elDebug.querySelector('.position .y .data')
+                    x: elDebug[1].querySelector('.position .x .data'),
+                    y: elDebug[1].querySelector('.position .y .data')
                 },
-                force: elDebug.querySelector('.force .data'),
-                pressure: elDebug.querySelector('.pressure .data'),
-                distance: elDebug.querySelector('.distance .data'),
+                force: elDebug[1].querySelector('.force .data'),
+                pressure: elDebug[1].querySelector('.pressure .data'),
+                distance: elDebug[1].querySelector('.distance .data'),
                 angle: {
-                    radian: elDebug.querySelector('.angle .radian .data'),
-                    degree: elDebug.querySelector('.angle .degree .data')
+                    radian: elDebug[1].querySelector('.angle .radian .data'),
+                    degree: elDebug[1].querySelector('.angle .degree .data')
                 },
                 direction: {
-                    x: elDebug.querySelector('.direction .x .data'),
-                    y: elDebug.querySelector('.direction .y .data'),
-                    angle: elDebug.querySelector('.direction .angle .data')
+                    x: elDebug[1].querySelector('.direction .x .data'),
+                    y: elDebug[1].querySelector('.direction .y .data'),
+                    angle: elDebug[1].querySelector('.direction .angle .data')
                 }
-            };
+              }
+          ];
 
             function bindNipple () {
                 joystickL.on('start end', function (evt, data) {
-                    dump(evt.type);
-                    debug(data);
+                    dump(evt.type, 0);
+                    debug(data, 0);
                 }).on('move', function (evt, data) {
-                    debug(data);
+                    debug(data, 0);
                 }).on('dir:up plain:up dir:left plain:left dir:down ' +
                     'plain:down dir:right plain:right',
                     function (evt, data) {
-                        dump(evt.type);
+                        dump(evt.type, 0);
                     }
                 ).on('pressure', function (evt, data) {
                     debug({pressure: data});
                 });
                 joystickR.on('start end', function (evt, data) {
-                    dump(evt.type);
-                    debug(data);
+                    dump(evt.type,1);
+                    debug(data,1);
                 }).on('move', function (evt, data) {
-                    debug(data);
+                    debug(data,1);
                 }).on('dir:up plain:up dir:left plain:left dir:down ' +
                     'plain:down dir:right plain:right',
                     function (evt, data) {
-                        dump(evt.type);
+                        dump(evt.type,1);
                     }
                 ).on('pressure', function (evt, data) {
                     debug({pressure: data});
@@ -171,7 +191,7 @@
 
 
             // Print data into elements
-            function debug (obj) {
+            function debug (obj, i) {
                 function parseObj(sub, el) {
                     for (var i in sub) {
                         if (typeof sub[i] === 'object' && el) {
@@ -182,20 +202,20 @@
                     }
                 }
                 setTimeout(function () {
-                    parseObj(obj, els);
+                    parseObj(obj, els[i]);
                 }, 0);
             }
 
             var nbEvents = 0;
-            function dump (evt) {
+            function dump (evt, i) {
                 setTimeout(function () {
-                    if (elDump.children.length > 4) {
-                        elDump.removeChild(elDump.firstChild);
+                    if (elDump[i].children.length > 4) {
+                        elDump[i].removeChild(elDump[i].firstChild);
                     }
                     var newEvent = document.createElement('div');
                     newEvent.innerHTML = '#' + nbEvents + ' : <span class="data">' +
                         evt + '</span>';
-                    elDump.appendChild(newEvent);
+                    elDump[i].appendChild(newEvent);
                     nbEvents += 1;
                 }, 0);
             }
