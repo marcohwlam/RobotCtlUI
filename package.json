@@ -2,15 +2,16 @@
   "name": "nipplejs2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./src/app/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "nipplejs": "^0.8.0"
+    "nipplejs": "^0.8.0",
+    "socket.io": "^1.7.3"
   }
 }
