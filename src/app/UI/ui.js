@@ -23,18 +23,20 @@ router.get('/', function(req, res) {
 });
 
 router.post('/control', function(req,res){
-  // console.log(req.body);
-  ctl.stdin.write(req.body + "\n");
+  console.log(req.body);
+  // ctl.stdin.write(req.body + "\n");
   // writeToWritable(req.body + "\n")
   res.end();
 });
 
-async function main() {
-  ctl = spawn('python', ['./src/app/robotCtl/HBrige.py'], {
-    stdio: [process.stdin, 'pipe', 'pipe']
-  });
-  console.log('### DONE');
-}
+
+
+// async function main() {
+//   ctl = spawn('python', ['./src/app/robotCtl/HBrige.py'], {
+//     stdio: [process.stdin, 'pipe', 'pipe']
+//   });
+//   console.log('### DONE');
+// }
 // main();
 
 // ctl.stdout.on('data', function(data){
