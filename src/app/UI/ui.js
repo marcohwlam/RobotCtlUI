@@ -1,59 +1,43 @@
-var express = require('express')
-  , router = express.Router()
-var fs = require('fs')
-var bodyParser = require('body-parser');
+/*
+ * Created by Ho Wang Lam
+ * marcohwlam@hotmail.com
+ * Copyright (c) Seamless Compute 2019.
+ */
 
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
-router.use(express.static('.'));
-var spawn = require('child_process').spawn;
-// const ctl = spawn('python', ['./src/app/robotCtl/HBrige.py'], {
-//   stdio: [process.stdin, 'pipe', 'pipe']
-// });
-var ctl;
-// process.stdin.pipe(ctl.stdin)
+module.exports = function (server) {
+    const express = require('express')
+        , router = express.Router();
+    const fs = require('fs');
+    const bodyParser = require('body-parser');
+    router.use(bodyParser.urlencoded({extended: true}));
+    router.use(bodyParser.json());
+    router.use(express.static('.'));
 
 // index
-router.get('/', function(req, res) {
-    fs.readFile('./src/app/UI/public/index.html', function(err, data) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(data);
-      res.end();
+    router.get('/', function (req, res) {
+        fs.readFile('./src/app/UI/public/index.html', function (err, data) {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        });
     });
-});
 
-router.post('/control', function(req,res){
-  console.log(req.body);
-  // ctl.stdin.write(req.body + "\n");
-  // writeToWritable(req.body + "\n")
-  res.end();
-});
+    router.post('/control', function (req, res) {
+        console.log(req.body);
+        res.end();
+    });
 
-
-
-// async function main() {
-//   ctl = spawn('python', ['./src/app/robotCtl/HBrige.py'], {
-//     stdio: [process.stdin, 'pipe', 'pipe']
-//   });
-//   console.log('### DONE');
-// }
-// main();
-
-// ctl.stdout.on('data', function(data){
-//   console.log(data.toString());
-// });
-//
-// ctl.stderr.on('data', function(data) {
-//     console.log('stdout: ' + data);
-// });
-//
-// ctl.on('error', (err) => {
-//   console.log("\n\t\tERROR: spawn failed! (" + err + ")");
-// });
-//
-// ctl.on('exit', (code, signal) => {
-//   console.log(code);
-//   console.log(signal);
-// });
-
-module.exports = router
+    console.log('in sockets fun');
+    const io = require('socket.io')(server);
+    console.log(io);
+    io.on('connection', function (socket) {
+        console.log('connected');
+        socket.on('chat message', function (msg) {
+            io.emit('chat message', msg);
+        });
+        socket.on('python-message', function (msg) {
+            console.log(msg);
+        });
+    });
+    return router;
+};

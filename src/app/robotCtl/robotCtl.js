@@ -1,13 +1,19 @@
-var express = require('express')
-  , router = express.Router()
-var fs = require('fs')
+/*
+ * Created by Ho Wang Lam
+ * marcohwlam@hotmail.com
+ * Copyright (c) Seamless Compute 2019.
+ */
+
+var express = require('express');
+var router = express.Router();
+var fs = require('fs');
 var bodyParser = require('body-parser');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-
-var spawn = require('child_process').spawn,
-ctl = spawn('python', ['./src/app/robotCtl/HBrige.py']),
+//
+// var spawn = require('child_process').spawn,
+// ctl = spawn('python', ['./src/app/robotCtl/HBrige.py'])
 
 // index
 router.get('/', function(req, res) {
@@ -15,7 +21,7 @@ router.get('/', function(req, res) {
   ctl.stdin.end();
 });
 
-module.exports = router
+module.exports = router;
 
 
 // /*Here we are saying that every time our node application receives data from the python process output stream(on 'data'), we want to convert that received data into a string and append it to the overall dataString.*/

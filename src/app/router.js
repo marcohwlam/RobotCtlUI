@@ -1,7 +1,13 @@
-var express = require('express')
-  , router = express.Router()
+/*
+ * Created by Ho Wang Lam
+ * marcohwlam@hotmail.com
+ * Copyright (c) Seamless Compute 2019.
+ */
 
-router.use('/UI', require('./UI/ui'))
-// router.use('/ctl', require('./robotCtl/ctl'))
-
-module.exports = router
+module.exports = function (server) {
+    let express, router;
+    express = require('express');
+    router = express.Router();
+    router.use('/UI', require('./UI/ui')(server));
+    return router;
+};
