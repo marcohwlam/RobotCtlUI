@@ -5,10 +5,12 @@
  */
 
 module.exports = function (server) {
-    const express = require('express')
-        , router = express.Router();
+    const express = require('express');
+    const router = express.Router();
     const fs = require('fs');
     const bodyParser = require('body-parser');
+    const io = require('socket.io')(server);
+
     router.use(bodyParser.urlencoded({extended: true}));
     router.use(bodyParser.json());
     router.use(express.static('.'));
@@ -24,20 +26,20 @@ module.exports = function (server) {
 
     router.post('/control', function (req, res) {
         console.log(req.body);
+        io.to('robot channel').emit('cmd', req.body);
         res.end();
     });
 
-    console.log('in sockets fun');
-    const io = require('socket.io')(server);
     console.log(io);
     io.on('connection', function (socket) {
         console.log('connected');
-        socket.on('chat message', function (msg) {
-            io.emit('chat message', msg);
-        });
+        // socket.on('chat message', function (msg) {
+        //     io.emit('chat message', msg);
+        // });
         socket.on('python-message', function (msg) {
             console.log(msg);
         });
+        socket.join('robot channel');
     });
     return router;
 };
